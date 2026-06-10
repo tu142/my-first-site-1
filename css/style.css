@@ -1,11 +1,12 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background-color: lightblue;
     text-align: center;
 }
 
 h1 {
-  color: #333;  
+    color: #333;
+    font-size: 48px;
 }
 
 ul {
@@ -13,22 +14,10 @@ ul {
     padding: 0;
 }
 
-li{
+li {
     background: white;
     margin: 5px auto;
     padding: 10px;
     width: 200px;
     border-radius: 8px;
-}
-
-h1 {
-    font-size: 48px;
-}
-
-h2 {
-    margin-top: 50px;
-}
-
-li:hover {
-    transform: scale(1.05);
 }
