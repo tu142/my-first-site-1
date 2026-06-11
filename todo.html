@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ToDoリスト</title>
+</head>
+
+<body>
+
+    <h1>ToDoリスト</h1>
+
+    <input type="text" id="task" placeholder="やることを入力">
+
+    <button onclick="addTask()">追加</button>
+
+    <ul id="list"></ul>
+
+    <script>
+
+        function addTask() {
+
+            const task = document.getElementById("task").value;
+
+            const li = document.createElement("li");
+
+            li.textContent = task + " ";
+
+            const deleteButton = document.createElement("button");
+
+            deleteButton.textContent = "削除";
+
+            deleteButton.onclick = function () {
+                li.remove();
+            };
+
+            li.appendChild(deleteButton);
+
+            document.getElementById("list").appendChild(li);
+
+            document.getElementById("task").value = "";
+        }
+        
+    </script>
+
+</body>
+
+</html>
