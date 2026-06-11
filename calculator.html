@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>電卓</title>
+</head>
+<body>
+
+    <h1>電卓</h1>
+
+    <input type="number" id="num1">
+
+    <select id="operator">
+        <option value="+">＋</option>
+        <option value="-">－</option>
+        <option value="*">×</option>
+        <option value="/">÷</option>
+    </select>
+
+    <input type="number" id="num2">
+
+    <button onclick="calculate()">計算</button>
+
+    <h2 id="result"></h2>
+
+    <script>
+
+        function calculate() {
+
+            const num1 = Number(document.getElementById("num1").value);
+            const num2 = Number(document.getElementById("num2").value);
+            const operator = document.getElementById("operator").value;
+
+            let answer;
+
+            if (operator === "+") {
+                answer = num1 + num2;
+            }
+
+            if (operator === "-") {
+                answer = num1 - num2;
+            }
+
+            if (operator === "*") {
+                answer = num1 * num2;
+            }
+
+            if (operator === "/") {
+                answer = num1 / num2;
+            }
+
+            document.getElementById("result").textContent =
+                "答え：" + answer;
+        }
+
+    </script>
+
+</body>
+</html>
