@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>おみくじ</title>
+</head>
+
+<body>
+
+    <h1>おみくじアプリ</h1>
+
+    <button onclick="omikuji()">おみくじを引く</button>
+
+    <p id="result"></p>
+    <p id="message"></p>
+
+    <script>
+        function omikuji() {
+
+
+            const results = [
+                "大吉",
+                "中吉",
+                "小吉",
+                "吉",
+                "末吉",
+                "凶"
+            ];
+
+            const random =
+                Math.floor(Math.random() * results.length);
+
+            const result = results[random];
+
+            let message = "";
+
+            if (result === "大吉") {
+                message = "とてもhappyなことがおきるかも。";
+            }
+            else if (result === "中吉") {
+                message = "良いことがたくさんありそうです！";
+            }
+            else if (result === "小吉") {
+                message = "何かいいことがあるかも。";
+            }
+            else if (result === "吉") {
+                message = "そのまま頑張って行きましょう。";
+            }
+            else if (result === "末吉") {
+                message = "頑張ればいいことがあるかも。";
+            }
+            else {
+                message = "今日は慎重に行動しましょう。";
+            }
+
+            document.getElementById("message").textContent = message;
+            document.getElementById("result").textContent =
+                results[random];
+
+
+
+            if (result === "大吉") {
+                document.getElementById("result").style.color = "gold";
+            }
+            else if (result === "凶") {
+                document.getElementById("result").style.color = "red";
+            }
+            else {
+                document.getElementById("result").style.color = "black";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+
+<style>
+    body {
+        text-align: center;
+        background-color: #d6eef7;
+        font-family: sans-serif;
+    }
+
+    h1 {
+        margin-top: 50px;
+    }
+
+    button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    #result {
+        font-size: 50px;
+        font-weight: bold;
+        margin-top: 30px;
+    }
+</style>
