@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー</title>
+    <h1>テスト123</h1>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <h1>カレンダーアプリ</h1>
+
+    <h2 id="today"></h2>
+
+    <div class="month-nav">
+
+        <button onclick="prevMonth()">←</button>
+
+        <span id="month"></span>
+
+        <button onclick="nextMonth()">→</button>
+
+        <button onclick="goToday()">今日</button>
+
+    </div>
+
+    <table id="calendar">
+    </table>
+
+    <script>
+
+        let currentDate = new Date();
+
+        function showMessage(day) {
+            alert(day + "日がクリックされました");
+        }
+
+        function showDate() {
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            const firstDay = new Date(year, month - 1, 1).getDay();
+            const lastDay = new Date(year, month, 0).getDate();
+            document.getElementById("month").textContent =
+                year + "年 " + month + "月";
+            const lastWeekDay = (firstDay + lastDay - 1) % 7;
+            const calendar = document.getElementById("calendar");
+            const today = new Date();
+            const todayDate = today.getDate();
+
+            let html =
+                "<tr>" +
+                "<th style='color:red'>日</th>" +
+                "<th>月</th>" +
+                "<th>火</th>" +
+                "<th>水</th>" +
+                "<th>木</th>" +
+                "<th>金</th>" +
+                "<th style='color:blue'>土</th>" +
+                "</tr>";
+            html += "<tr>";
+
+            for (let i = 0; i < firstDay; i++) {
+                html += "<td></td>";
+            }
+
+            for (let day = 1; day <= lastDay; day++) {
+
+                if (
+                    day === new Date().getDate() &&
+                    month === new Date().getMonth() + 1 &&
+                    year === new Date().getFullYear()
+                ) {
+                  html += "<td onclick='showMessage(" + day + ")'><div class='today'>" + day + "</div></td>";
+                } else {
+                    const dayOfWeek = (firstDay + day - 1) % 7;
+
+                    if (dayOfWeek === 0) {
+                        html += "<td onclick='showMessage(" + day + ")'>" + day + "</td>";
+                    }
+                    else if (dayOfWeek === 6) {
+                        html += "<td style='color:red' onclick='showMessage(" + day + ")'>" + day + "</td>";
+                    }
+                    else {
+                        html += "<td style='color:bule' onclick='showMessage(" + day + ")'>" + day + "</td>";
+                    }
+
+                }
+
+                if ((firstDay + day) % 7 === 0) {
+                    html += "</tr><tr>";
+                }
+            }
+            for (let i = lastWeekDay + 1; i < 7; i++) {
+                html += "<td></td>";
+            }
+
+            html += "</tr>";
+
+            calendar.innerHTML = html;
+
+        }
+
+        function prevMonth() {
+
+            currentDate.setMonth(currentDate.getMonth() - 1);
+
+            showDate();
+
+        }
+
+        function nextMonth() {
+
+            currentDate.setMonth(currentDate.getMonth() + 1);
+
+            showDate();
+        }
+
+        function goToday() {
+
+            currentDate = new Date();
+            f
+            showDate();
+
+        }
+
+        showDate();
+
+    </script>
+</body>
+
+</html>

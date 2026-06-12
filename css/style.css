@@ -63,3 +63,55 @@ input, select, button {
 h1 {
   color: blue;
 }
+.month-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+#calendar {
+    margin: 30px auto;
+    border-collapse: collapse;
+}
+
+#calendar th {
+    padding: 10px;
+    border: 1px solid black;
+    background-color: white;
+}
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+}
+
+#calendar {
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+#calendar th,
+#calendar td {
+    border: 1px solid black;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+}
+
+.today {
+    background-color: yellow;
+    border-radius: 50%;
+     width: 40px;
+    height: 40px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
