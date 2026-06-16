@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+
     <title>カレンダー</title>
-    <h1>テスト123</h1>
+
     <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -30,13 +31,67 @@
     <table id="calendar">
     </table>
 
+   <div id="schedule">
+   <input
+    type="text"
+    id="searchText"
+    placeholder="予定を検索"
+    oninput="showDate()"
+> 
+   <h2 id="scheduleTitle">予定一覧</h2>
+    <ul id="scheduleList"></ul>
+</div>
+
     <script>
+        let schedules =
+            JSON.parse(localStorage.getItem("schedules")) || {};
 
         let currentDate = new Date();
 
         function showMessage(day) {
-            alert(day + "日がクリックされました");
-        }
+
+
+    const key =
+        currentDate.getFullYear() + "-" +
+        (currentDate.getMonth() + 1) + "-" +
+        day;
+
+   const schedule = prompt("予定を入力してください");
+
+const category = prompt(
+    "種類を入力してください\n病院 / 勉強 / 仕事 / その他"
+);
+
+if (schedules[key] && schedules[key].text) {
+    message =
+        "現在の予定: " +
+        schedules[key].text +
+        "\n\n新しい予定を入力してください";
+}
+if (schedule !== null && schedule !== "") {
+
+    schedules[key]= {
+        text: schedule,
+        category: category
+    };
+
+    localStorage.setItem(
+        "schedules",
+        JSON.stringify(schedules)
+    );
+
+    showDate();
+}
+
+
+
+        localStorage.setItem(
+            "schedules",
+            JSON.stringify(schedules)
+        );
+
+        showDate();
+    }
 
         function showDate() {
 
@@ -62,30 +117,73 @@
                 "<th style='color:blue'>土</th>" +
                 "</tr>";
             html += "<tr>";
-
+    
             for (let i = 0; i < firstDay; i++) {
                 html += "<td></td>";
+
             }
 
             for (let day = 1; day <= lastDay; day++) {
+                let text = day;
+            
+const key =
+    year + "-" +
+    month + "-" +
+    day;
+            
+let bgColor = "";
 
+if (schedules[key]) {
+
+   if (schedules[key].category === "病院") {
+        bgColor = "#ffb3b3";
+  }
+    else if (schedules[key].category === "勉強") {
+        bgColor = "#b3d9ff";
+    }
+    else if (schedules[key].category === "仕事") {
+        bgColor = "#b3ffb3";
+    }
+    else {
+        bgColor = "#fff799";
+    }
+}
+
+if (schedules[key]) {
+    bgColor = "background-color: yellow;";
+}
+
+
+if (schedules[key]) {
+    text =
+        day + 
+         "📌" +
+        "<br><small>" +
+        schedules[key].text+
+        "</small>";
+}
+
+
+               
                 if (
                     day === new Date().getDate() &&
                     month === new Date().getMonth() + 1 &&
                     year === new Date().getFullYear()
                 ) {
-                  html += "<td onclick='showMessage(" + day + ")'><div class='today'>" + day + "</div></td>";
+                       html += "<td class='today' style='background-color: lightgreen;' onclick='showMessage(" + day + ")'>" + text + "</td>";
+                
                 } else {
                     const dayOfWeek = (firstDay + day - 1) % 7;
 
                     if (dayOfWeek === 0) {
-                        html += "<td onclick='showMessage(" + day + ")'>" + day + "</td>";
+                      
+                      html += "<td style='" + bgColor + " color:red'; onclick='showMessage(" + day + ")'>" + text + "</td>";
                     }
                     else if (dayOfWeek === 6) {
-                        html += "<td style='color:red' onclick='showMessage(" + day + ")'>" + day + "</td>";
+                        html += "<td style='" + bgColor + " color:blue'; onclick='showMessage(" + day + ")'>" + text + "</td>";
                     }
                     else {
-                        html += "<td style='color:bule' onclick='showMessage(" + day + ")'>" + day + "</td>";
+                       html += "<td style='" + bgColor + " color:blue'; onclick='showMessage(" + day + ")'>" + text + "</td>";
                     }
 
                 }
@@ -101,6 +199,39 @@
             html += "</tr>";
 
             calendar.innerHTML = html;
+
+            const scheduleList =
+    document.getElementById("scheduleList");
+
+let listHtml = "";
+
+const keys = Object.keys(schedules);
+
+const searchText =
+    document.getElementById("searchText").value;
+
+keys.sort();
+
+document.getElementById("scheduleTitle").textContent =
+    "予定一覧（" + keys.length + "件）";
+
+for (let key of keys) {
+
+    if (
+    searchText &&
+    !schedules[key].text.includes(searchText)
+) {
+    continue;
+}
+listHtml +=
+    "<li>" +
+    key +
+    " : " +
+    schedules[key].text+
+    " <button onclick=\"deleteSchedule('" + key + "')\">削除</button>" +
+    "</li>";
+    }
+scheduleList.innerHTML = listHtml;
 
         }
 
@@ -122,14 +253,30 @@
         function goToday() {
 
             currentDate = new Date();
-            f
             showDate();
 
         }
 
         showDate();
 
+function deleteSchedule(key) {
+
+    if (!confirm("本当に削除しますか？")) {
+        return;
+    }
+
+    delete schedules[key];
+
+    localStorage.setItem(
+        "schedules",
+        JSON.stringify(schedules)
+    );
+
+    showDate();
+}
+
     </script>
 </body>
 
 </html>
+
