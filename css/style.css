@@ -248,3 +248,11 @@ li{
     list-style:none;
     margin:10px;
 }
+
+.income{
+    color: green;
+}
+
+.expense{
+    color: red;
+}

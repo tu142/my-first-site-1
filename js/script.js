@@ -1,12 +1,76 @@
-let total = Number(
-    localStorage.getItem("total")
-) || 0;
+let expenses = JSON.parse(
+    localStorage.getItem("expenses")
+) || [];
 
-document.getElementById("total")
+let total = 0;
+
+function saveExpenses() {
+    localStorage.setItem(
+        "expenses",
+        JSON.stringify(expenses)
+    );
+}
+
+function renderExpenses() {
+let incomeTotal = 0;
+let expenseTotal = 0;
+
+    const list =
+        document.getElementById("list");
+
+    list.innerHTML = "";
+
+    total = 0;
+
+    expenses.forEach(function(expense, index){
+
+        const li =
+            document.createElement("li");
+
+const label =
+    expense.type === "income"
+    ? "💰収入"
+    : "💸支出";
+
+li.innerHTML =
+    label +
+    " " +
+    expense.item +
+    " ¥" +
+    expense.amount +
+    " <button onclick='deleteItem(" +
+    index +
+    ")'>削除</button>";
+
+        list.appendChild(li);
+
+if(expense.type === "income"){
+
+    total += expense.amount;
+    incomeTotal += expense.amount;
+
+}else{
+
+    total -= expense.amount;
+    expenseTotal += expense.amount;
+}
+    });
+
+    document.getElementById("total")
+        .textContent =
+        "合計: ¥" + total;
+
+document.getElementById("incomeTotal")
     .textContent =
-    "合計: ¥" + total;
+    "収入合計: ¥" + incomeTotal;
 
+document.getElementById("expenseTotal")
+    .textContent =
+    "支出合計: ¥" + expenseTotal;
+}
 function addExpense(){
+const type =
+    document.getElementById("type").value;
 
     const item =
         document.getElementById("item").value;
@@ -21,48 +85,27 @@ function addExpense(){
         return;
     }
 
-    const li =
-        document.createElement("li");
+expenses.push({
+    type: type,
+    item: item,
+    amount: amount
+});
 
-    li.innerHTML =
-        item +
-        " ¥" +
-        amount +
-        " <button onclick='deleteItem(this," +
-        amount +
-        ")'>削除</button>";
+    saveExpenses();
 
-    document
-        .getElementById("list")
-        .appendChild(li);
-
-    total += amount;
-
-    localStorage.setItem(
-        "total",
-        total
-    );
-
-    document.getElementById("total")
-        .textContent =
-        "合計: ¥" + total;
+    renderExpenses();
 
     document.getElementById("item").value = "";
     document.getElementById("amount").value = "";
 }
 
-function deleteItem(button, amount){
+function deleteItem(index){
 
-    button.parentElement.remove();
+    expenses.splice(index, 1);
 
-    total -= amount;
+    saveExpenses();
 
-    localStorage.setItem(
-        "total",
-        total
-    );
-
-    document.getElementById("total")
-        .textContent =
-        "合計: ¥" + total;
+    renderExpenses();
 }
+
+renderExpenses();
