@@ -133,3 +133,68 @@ td small {
     font-weight: bold;
     border: 3px solid green;
 }
+
+background-color: skyblue;
+
+#forecast{
+    margin-top:30px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.day-card{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    width:100px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.2);
+}
+
+#forecast {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.forecast-card {
+    background: white;
+    width: 180px;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.forecast-card h3 {
+    margin-bottom: 10px;
+}
+
+.forecast-card p {
+    margin: 5px 0;
+}
+
+#forecast {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.weather-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 120px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.weather-card p {
+    margin: 8px 0;
+}
+
+#forecast {
+    margin-bottom: 20px;
+}

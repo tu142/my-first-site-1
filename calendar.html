@@ -56,8 +56,13 @@
         (currentDate.getMonth() + 1) + "-" +
         day;
 
-   const schedule = prompt("予定を入力してください");
+ const currentText =
+    schedules[key] ? schedules[key].text : "";
 
+const schedule = prompt(
+    "予定を入力してください",
+    currentText
+);
 const category = prompt(
     "種類を入力してください\n病院 / 勉強 / 仕事 / その他"
 );
@@ -68,7 +73,12 @@ if (schedules[key] && schedules[key].text) {
         schedules[key].text +
         "\n\n新しい予定を入力してください";
 }
-if (schedule !== null && schedule !== "") {
+if (schedule === "") {
+
+    delete schedules[key];
+
+} else if (schedule !== null) {
+
 
     schedules[key]= {
         text: schedule,
@@ -155,11 +165,22 @@ if (schedules[key]) {
 
 
 if (schedules[key]) {
+
+    let icon = "📌";
+
+    if (schedules[key].category === "病院") {
+        icon = "🏥";
+    } else if (schedules[key].category === "勉強") {
+        icon = "📚";
+    } else if (schedules[key].category === "仕事") {
+        icon = "💼";
+    }
+
     text =
-        day + 
-         "📌" +
+        day +
+        icon +
         "<br><small>" +
-        schedules[key].text+
+        schedules[key].text +
         "</small>";
 }
 
