@@ -198,3 +198,8 @@ background-color: skyblue;
 #forecast {
     margin-bottom: 20px;
 }
+
+.weather-card p {
+    margin: 8px 0;
+    font-size: 18px;
+}
