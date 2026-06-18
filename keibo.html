@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>家計簿アプリ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h1>💰 家計簿アプリ</h1>
+
+    <input
+        type="text"
+        id="item"
+        placeholder="内容を入力"
+    >
+
+    <input
+        type="number"
+        id="amount"
+        placeholder="金額を入力"
+    >
+
+    <button onclick="addExpense()">
+        追加
+    </button>
+
+    <ul id="list"></ul>
+
+    <h2 id="total">合計: ¥0</h2>
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>
