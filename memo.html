@@ -1,0 +1,30 @@
+<h1>📝 メモアプリ</h1>
+
+<input
+    type="text"
+    id="memoInput"
+    placeholder="メモを入力"
+     onkeypress="if(event.key==='Enter') addMemo()"
+>
+>
+
+<button onclick="addMemo()">
+    追加
+</button>
+
+<p id="count">残り 0 件</p>
+
+<input
+    type="text"
+    id="search"
+    placeholder="検索"
+    onkeyup="searchMemo()"
+>
+
+<button onclick="deleteCompleted()">
+    完了を削除
+</button>
+
+<ul id="memoList"></ul>
+
+<script src="js/memo.js"></script>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>クイズアプリ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h1>🧠 クイズアプリ</h1>
+
+    <h2 id="question"></h2>
+
+    <button onclick="checkAnswer(0)" id="btn0"></button>
+    <button onclick="checkAnswer(1)" id="btn1"></button>
+    <button onclick="checkAnswer(2)" id="btn2"></button>
+
+    <h2 id="result"></h2>
+
+<button
+    id="retryBtn"
+    onclick="location.reload()"
+    style="display:none;">
+    もう一度挑戦
+</button>
+
+    <h3 id="progress"></h3>
+
+    <script src="js/quiz.js"></script>
+
+</body>
+</html>

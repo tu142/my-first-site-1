@@ -134,7 +134,9 @@ td small {
     border: 3px solid green;
 }
 
+body {
 background-color: skyblue;
+}
 
 #forecast{
     margin-top:30px;
@@ -255,4 +257,97 @@ li{
 
 .expense{
     color: red;
+}
+
+body{
+    text-align:center;
+    margin-top:50px;
+}
+
+button{
+    padding:10px 20px;
+    margin:10px;
+    font-size:18px;
+}
+
+#retryBtn{
+    display: none;
+}
+
+button{
+    padding: 5px 10px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover{
+    opacity: 0.8;
+}
+
+.edit-btn{
+    background: #4caf50;
+    color: white;
+}
+
+.delete-btn{
+    background: #f44336;
+    color: white;
+}
+
+#count{
+    font-size: 24px;
+    font-weight: bold;
+}
+
+body{
+    font-family: sans-serif;
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+input{
+    padding: 8px;
+}
+
+button{
+    padding: 8px 12px;
+    margin-left: 5px;
+}
+
+#count{
+    font-size: 24px;
+    font-weight: bold;
+}
+
+li{
+    margin: 10px 0;
+}
+
+body{
+    font-family: sans-serif;
+    margin: 30px;
+}
+
+h1{
+    color: #333;
+}
+
+input{
+    padding: 8px;
+}
+
+button{
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+li{
+    margin: 10px 0;
+}
+
+#count{
+    font-weight: bold;
+    color: blue;
 }
