@@ -10,6 +10,14 @@
 
 <button onclick="addMemo()">
     追加
+ <button onclick="showCompleted()">
+完了のみ表示
+</button>
+
+<button onclick="renderMemos()">
+すべて表示
+</button>
+
 </button>
 
 <p id="count">残り 0 件</p>
@@ -24,6 +32,18 @@
 <button onclick="deleteCompleted()">
     完了を削除
 </button>
+
+<input type="text" id="memoInput">
+
+<input type="date" id="deadline">
+
+<select id="priority">
+    <option value="高">高</option>
+    <option value="中" selected>中</option>
+    <option value="低">低</option>
+</select>
+
+<button onclick="addMemo()">追加</button>
 
 <ul id="memoList"></ul>
 

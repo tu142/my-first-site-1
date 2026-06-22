@@ -10,6 +10,12 @@ function addMemo(){
     const text =
         document.getElementById("memoInput").value;
 
+    const priority =
+        document.getElementById("priority").value;
+
+    const deadline =
+        document.getElementById("deadline").value;
+
     if(text === ""){
         alert("入力してください");
         return;
@@ -17,7 +23,10 @@ function addMemo(){
 
     memos.push({
         text: text,
-        done: false
+        done: false,
+        priority: priority,
+        deadline: deadline,
+        createdAt: new Date().toLocaleString()
     });
 
     saveMemos();
@@ -45,7 +54,19 @@ memos.sort(function(a, b){
 });
 
     list.innerHTML = "";
+let priorityColor = "";
 
+if(memo.priority === "高"){
+    priorityColor = "red";
+}
+else if(memo.priority === "中"){
+    priorityColor = "orange";
+}
+else{
+    priorityColor = "blue";
+}
+
+const today = new Date().toISOString().split("T")[0];
     memos.forEach(function(memo, index){
 
         const li =
@@ -62,10 +83,26 @@ li.innerHTML =
         ? "text-decoration:line-through;color:gray;"
         : "") +
     "'>" +
-    memo.text +
-    "</span>" +
-
-    " <button onclick='editMemo(" +
++"<span style='color:" +
+priorityColor +
+";font-weight:bold;'>[" +
+(memo.priority || "中") +
+"]</span> "
+memo.text +
+"<br><small style='" +
+(memo.deadline && memo.deadline <= today
+    ? "color:red;font-weight:bold;"
+    : "") +
+"'>締切: " +
+(memo.deadline || "未設定") +
+"</small>" +
+"<br><small>作成日: " +
+memo.createdAt +
+"</small>"
+"<br><small>作成日: " +
+memo.createdAt +
+"</small>" +
+"</span>" +
     index +
     ")'>編集</button>" +
 
@@ -176,6 +213,28 @@ function deleteCompleted(){
 
     renderMemos();
 
+}
+function showCompleted(){
+
+    const list =
+        document.getElementById("memoList");
+
+    list.innerHTML = "";
+
+    memos.forEach(function(memo, index){
+
+        if(!memo.done){
+            return;
+        }
+
+        const li =
+            document.createElement("li");
+
+        li.textContent = memo.text;
+
+        list.appendChild(li);
+
+    });
 }
 
 
