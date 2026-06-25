@@ -1,118 +1,85 @@
-
+alert("ここが開かれています");
 
 let memos =
     JSON.parse(
         localStorage.getItem("memos")
     ) || [];
-
+alert("addMemo動いてます");
 function addMemo(){
 
-    const text =
-        document.getElementById("memoInput").value;
 
-    const priority =
-        document.getElementById("priority").value;
+const text =
+    document.getElementById("memoInput").value;
 
-    const deadline =
-        document.getElementById("deadline").value;
+const priority =
+    document.getElementById("priority").value;
 
-    if(text === ""){
-        alert("入力してください");
-        return;
-    }
+const deadline =
+    document.getElementById("deadline").value;
 
-    memos.push({
-        text: text,
-        done: false,
-        priority: priority,
-        deadline: deadline,
-        createdAt: new Date().toLocaleString()
-    });
-
-    saveMemos();
-    renderMemos();
-
-    document.getElementById("memoInput").value = "";
+if(text === ""){
+    alert("入力してください");
+    return;
 }
+
+memos.push({
+    text: text,
+    done: false,
+    priority: priority,
+    deadline: deadline,
+    createdAt: new Date().toLocaleString()
+});
+
+saveMemos();
+renderMemos();
+
+document.getElementById("memoInput").value = "";
+
+
+}
+
 
 function renderMemos(){
 
-    const list =
-        document.getElementById("memoList");
-memos.sort(function(a, b){
+const list = document.getElementById("memoList");
 
-    if(a.done === b.done){
-        return 0;
-    }
+list.innerHTML = "";
 
-    if(a.done){
-        return 1;
-    }
+memos.forEach(function(memo, index){
 
-    return -1;
+const li = document.createElement("li");
+
+li.innerHTML =
+
+"<input type='checkbox' " +
+(memo.done ? "checked" : "") +
+" onchange='toggleDone(" + index + ")'>" +
+
+"<span style='" +
+(memo.done
+? "text-decoration:line-through;color:gray;"
+: "") +
+"'>" +
+
+"[" + (memo.priority || "中") + "] " +
+
+memo.text +
+
+" 締切: " +
+(memo.deadline || "未設定") +
+
+" 作成日: " +
+memo.createdAt +
+
+"</span>" +
+
+"<button onclick='deleteMemo(" + index + ")'>削除</button>";
+
+list.appendChild(li);
 
 });
 
-    list.innerHTML = "";
-let priorityColor = "";
-
-if(memo.priority === "高"){
-    priorityColor = "red";
 }
-else if(memo.priority === "中"){
-    priorityColor = "orange";
-}
-else{
-    priorityColor = "blue";
-}
-
-const today = new Date().toISOString().split("T")[0];
-    memos.forEach(function(memo, index){
-
-        const li =
-            document.createElement("li");
-
-            
-li.innerHTML =
-    "<input type='checkbox' " +
-    (memo.done ? "checked" : "") +
-    " onchange='toggleDone(" + index + ")'>" +
-
-    "<span style='" +
-    (memo.done
-        ? "text-decoration:line-through;color:gray;"
-        : "") +
-    "'>" +
-+"<span style='color:" +
-priorityColor +
-";font-weight:bold;'>[" +
-(memo.priority || "中") +
-"]</span> "
-memo.text +
-"<br><small style='" +
-(memo.deadline && memo.deadline <= today
-    ? "color:red;font-weight:bold;"
-    : "") +
-"'>締切: " +
-(memo.deadline || "未設定") +
-"</small>" +
-"<br><small>作成日: " +
-memo.createdAt +
-"</small>"
-"<br><small>作成日: " +
-memo.createdAt +
-"</small>" +
-"</span>" +
-    index +
-    ")'>編集</button>" +
-
-    " <button onclick='deleteMemo(" +
-    index +
-    ")'>削除</button>";
-
-    
-        list.appendChild(li);
-    });
      const remaining = memos.filter(function(memo){
         return !memo.done;
     }).length;
@@ -124,7 +91,7 @@ document.getElementById("count").textContent =
     "残り " + remaining +
     " 件 / 全 " + total + " 件";
 
-}
+
 
 
 function saveMemos(){
@@ -240,3 +207,4 @@ function showCompleted(){
 
   
 renderMemos();
+
