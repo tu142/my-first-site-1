@@ -35,14 +35,15 @@
   <ul>
     <li>HTML</li>
     <li>CSS</li>
-    <li>Github</li>
+    <li>JavaScript</li>
+    <li>Git・GitHub</li>
   </ul>
 
   <h2>学習履歴</h2>
   <p>2026年6月 HTML学習開始</p>
   <p>2026年6月 CSS学習開始</p>
   <p>2026年6月 Git・GitHub学習開始</p>
-
+  <p>2026年6月 JavaScript学習開始</p>
   <p>
     <a href="https://github.com/tu142">
       私のGitHub
@@ -55,14 +56,15 @@
 
   <h2>お問い合わせ</h2>
 
-  <form>
-    <input type="text" placeholder="お名前">
-    <br><br>
+  <form id="contactForm">
+  <p id="contactMessage"></p>
+  <input type="text" placeholder="お名前">
+  <br><br>
 
-    <textarea placeholder="メッセージ"></textarea>
-    <br><br>
+  <textarea placeholder="メッセージ"></textarea>
+  <br><br>
 
-    <button>送信</button>
+  <button type="submit">送信</button>
   </form>
 
   <h3>おみくじアプリ</h3>
@@ -141,6 +143,32 @@
   <a href="inventory_v2.html">
     <button>在庫管理アプリを見る</button>
   </a>
+
+  <script>
+    const contactForm = document.getElementById("contactForm");
+
+    contactForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const name = document.querySelector('input[type="text"]').value.trim();
+
+      if (name === "") {
+        document.getElementById("contactMessage").textContent =
+          "お名前を入力してください";
+        return;
+      }
+
+      const message = document.querySelector("textarea").value.trim();
+
+      if (message === "") {
+        document.getElementById("contactMessage").textContent =
+          "メッセージを入力してください";
+        return;
+      }
+      
+      document.getElementById("contactMessage").textContent = "お問い合わせを受け付けました";
+    });
+  </script>
 
 </body>
 
