@@ -420,3 +420,8 @@ body.dark-mode button {
 body.dark-mode li {
     background-color: #444;
 }
+
+body>a {
+  display: block;
+  margin: 10px auto;
+}
