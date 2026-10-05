@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>メモアプリ</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -24,6 +25,36 @@
     <option value="低">低</option>
 </select>
 
+<select id="category">
+    <option value="勉強">勉強</option>
+    <option value="仕事">仕事</option>
+    <option value="買い物">買い物</option>
+    <option value="その他">その他</option>
+</select>
+
+<select id="categoryFilter" onchange="renderMemos()">
+    <option value="すべて">すべて</option>
+    <option value="仕事">仕事</option>
+    <option value="勉強">勉強</option>
+    <option value="買い物">買い物</option>
+    <option value="その他">その他</option>
+</select>
+
+<select id="priorityFilter" onchange="renderMemos()">
+    <option value="すべて">すべての優先度</option>
+    <option value="高">高</option>
+    <option value="中">中</option>
+    <option value="低">低</option>
+</select>
+
+<select id="deadlineFilter" onchange="renderMemos()">
+    <option value="すべて">すべての締切</option>
+    <option value="今日">今日</option>
+    <option value="期限切れ">期限切れ</option>
+    <option value="締切あり">締切あり</option>
+    <option value="締切なし">締切なし</option>
+</select>
+
 <button onclick="addMemo()">
 追加
 </button>
@@ -43,7 +74,9 @@
 完了を削除
 </button>
 
-
+<button onclick="toggleDarkMode()">
+    🌙 ダークモード
+</button>
 <br><br>
 
 <input
@@ -64,7 +97,6 @@
 
 <script src="js/memo.js"></script>
 
-<script src="script.js"></script>
 
 </body>
 </html>

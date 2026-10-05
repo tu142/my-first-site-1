@@ -386,3 +386,37 @@ input[type="text"]{
 h1{
     margin-bottom: 20px;
 }
+#memoList {
+    list-style: none;
+    padding: 0;
+}
+
+#memoList li {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+body {
+    background-color: white;
+}
+
+body.dark-mode {
+    background-color: #222;
+    color: white;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode button {
+    background-color: #333;
+    color: white;
+    border: 1px solid #666;
+}
+
+body.dark-mode li {
+    background-color: #444;
+}

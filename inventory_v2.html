@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>在庫管理</title>
+</head>
+
+<body>
+
+  <h1>在庫管理</h1>
+
+  <input id="productInput" type="text" placeholder="商品名">
+
+  <input id="quantityInput" type="number" placeholder="数量">
+
+  <input id="removeQuantityInput" type="number" placeholder="出庫数量">
+
+  <button id="removeButton">出庫を減らす</button>
+
+  <button id="addButton">商品を追加</button>
+
+  <h2>在庫一覧</h2>
+
+  <ul id="inventoryList"></ul>
+
+  <div id="inventoryDetail"></div>
+
+  <h2>全商品の在庫状況</h2>
+
+  <button id="showInventorySummaryButton">
+    在庫状況を確認
+  </button>
+
+  <ul id="inventorySummaryList"></ul>
+
+  <h2>在庫切れ商品</h2>
+  <ul id="outOfStockList"></ul>
+
+  <button id="showOutOfStockButton">
+    在庫切れ商品だけ表示
+  </button>
+
+  <h2>在庫差異の商品</h2>
+
+  <button id="showDifferenceButton">
+    差異のある商品を確認
+  </button>
+
+  <ul id="differenceList"></ul>
+  <h2>在庫調整</h2>
+
+  <input id="adjustProductInput" type="text" placeholder="商品名">
+
+  <input id="adjustQuantityInput" type="number" placeholder="正しい在庫数">
+
+  <input id="adjustReasonInput" type="text" placeholder="調整理由">
+
+  <button id="adjustInventoryButton">
+    在庫を調整
+  </button>
+
+  <h2>在庫少の商品</h2>
+
+  <button id="showLowStockButton">
+    在庫少の商品だけ表示
+  </button>
+
+  <ul id="lowStockList"></ul>
+
+  <h2>在庫異常チェック</h2>
+
+  <button id="checkInventoryButton">
+    在庫異常をチェック
+  </button>
+
+  <ul id="inventoryCheckList"></ul>
+
+  <button id="resetInventoryButton">
+    在庫データをリセット
+  </button>
+
+  <ul id="inventoryList"></ul>
+
+  <input id="inventorySearchInput" type="text" placeholder="商品名を検索">
+
+  <button id="inventorySearchButton">
+    検索
+  </button>
+
+  <p id="inventorySearchCount">
+    検索回数 : 0回
+  </p>
+
+  <button id="resetInventorySearchCountButton">
+    検索回数をリセット
+  </button>
+
+  <h2>検索結果</h2>
+
+  <ul id="inventorySearchList"></ul>
+
+  <p id="inventoryDetail"></p>
+
+  <h2>入出庫履歴</h2>
+
+  <p id="inventoryHistoryCount"></p>
+
+  <button id="newestHistoryButton">新しい順</button>
+  <button id="oldestHistoryButton">古い順</button>
+
+  <button id="resetInventoryHistoryButton">
+    入出庫履歴をリセット
+  </button>
+  <button id="allHistoryButton">すべて</button>
+  <button id="inHistoryButton">入庫</button>
+  <button id="outHistoryButton">出庫</button>
+
+  </button>
+  <ul id="inventoryHistoryList"></ul>
+
+  <input id="historySearchInput" type="text" placeholder="商品名で履歴を検索">
+
+  <select id="historyTypeSelect">
+    <option value="すべて">すべて</option>
+    <option value="入庫">入庫</option>
+    <option value="出庫">出庫</option>
+    <option value="調整">調整</option>
+  </select>
+
+  <button id="historySearchButton">
+    履歴を検索
+  </button>
+
+  <p id="historySearchCount"></p>
+
+  <button id="exportHistoryButton">
+    検索結果をCSV保存
+  </button>
+
+  <input id="csvFileInput" type="file" accept=".csv">
+
+  <button id="readCsvButton">
+    CSVを読み込む
+  </button>
+  <h3>読み込んだ履歴</h3>
+
+  <ul id="importedHistoryList"></ul>
+
+  <button id="clearImportedHistoryButton">
+    読み込み履歴を削除
+  </button>
+
+  <button id="importHistoryButton">
+    このデータを取り込む
+  </button>
+
+  <pre id="csvResult"></pre>
+
+  <button id="resetHistorySearchButton">
+    検索をリセット
+  </button>
+
+  <button id="newestSearchHistoryButton">新しい順</button>
+  <button id="oldestSearchHistoryButton">古い順</button>
+
+  <ul id="historySearchList"></ul>
+
+  <p id="undoMessage"></p>
+
+  <script src="inventory_v2.js"></script>
+</body>
+
+</html>
