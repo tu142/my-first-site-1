@@ -26,6 +26,8 @@
 
   <div id="inventoryDetail"></div>
 
+  <button id="closeInventoryDetailButton">詳細を閉じる</button>
+
   <h2>全商品の在庫状況</h2>
 
   <button id="showInventorySummaryButton">
@@ -119,6 +121,8 @@
   </button>
   <ul id="inventoryHistoryList"></ul>
 
+  <p id="undoMessage"></p>
+
   <input id="historySearchInput" type="text" placeholder="商品名で履歴を検索">
 
   <select id="historyTypeSelect">
@@ -127,6 +131,7 @@
     <option value="出庫">出庫</option>
     <option value="調整">調整</option>
   </select>
+
 
   <button id="historySearchButton">
     履歴を検索
@@ -166,9 +171,7 @@
 
   <ul id="historySearchList"></ul>
 
-  <p id="undoMessage"></p>
-
-  <script src="inventory_v2.js"></script>
+  <script src="js/inventory_v2.js"></script>
 </body>
 
 </html>

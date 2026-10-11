@@ -98,6 +98,13 @@ inventorySearchButton.addEventListener("click", function () {
 const inventoryDetail =
   document.getElementById("inventoryDetail");
 
+const closeInventoryDetailButton =
+  document.getElementById("closeInventoryDetailButton");
+
+closeInventoryDetailButton.addEventListener("click", function () {
+  inventoryDetail.innerHTML = "";
+});
+
 const inventorySearchCount =
   document.getElementById("inventorySearchCount");
 
@@ -142,16 +149,21 @@ showLowStockButton.addEventListener("click", function () {
 
   const lowStockItems =
     inventory.filter(function (item) {
-      return item.quantity <= 5;
+      return item.quantity > 0 && item.quantity <= 5;
     });
 
-  console.log("在庫少の商品:", lowStockItems);
+ 
 
   lowStockItems.sort(function (a, b) {
     return a.quantity - b.quantity;
   });
 
   lowStockList.innerHTML = "";
+
+  if (lowStockItems.length === 0) {
+    lowStockList.textContent = "在庫少の商品はありません。";
+    return;
+  }
 
   lowStockItems.forEach(function (item) {
 
@@ -160,6 +172,13 @@ showLowStockButton.addEventListener("click", function () {
 
     li.textContent =
       item.name + " : " + item.quantity + "個";
+
+    li.style.cursor = "pointer";
+
+    li.addEventListener("click", function () {
+      const result = calculateInventory(item);
+      showInventoryDetail(item, result);
+    });
 
     lowStockList.appendChild(li);
 
@@ -445,8 +464,11 @@ showInventorySummaryButton.onclick = function () {
       " 在庫チェック：" +
       checkStatus;
 
+    li.style.cursor = "pointer";
+
     li.addEventListener("click", function () {
-      showInventoryDetail(item, result);
+      const latestResult = calculateInventory(item);
+      showInventoryDetail(item, latestResult);
     });
 
     inventorySummaryList.appendChild(li);
@@ -477,11 +499,11 @@ function calculateInventory(item) {
   allHistory.slice(0, 5).map(function (history) {
     return history.itemId;
   })
-
+  
   const validHistory =
     itemHistory.filter(isValidHistory);
 
-  const historyCount = validHistory.length;
+  const historyCount = itemHistory.length;
 
   const totals =
     validHistory.reduce(function (result, history) {
@@ -549,6 +571,7 @@ showDifferenceButton.addEventListener("click", function () {
     const result = calculateInventory(item);
 
     return {
+      id: item.id,
       name: item.name,
       inTotal: result.inTotal,
       outTotal: result.outTotal,
@@ -562,9 +585,26 @@ showDifferenceButton.addEventListener("click", function () {
     return result.difference !== 0;
   });
 
+  differences.sort(function (a, b) {
+    return Math.abs(b.difference) - Math.abs(a.difference);
+  });
+
+  if (differences.length === 0) {
+    differenceList.textContent = "在庫差異の商品はありません。";
+    return;
+  }
+
   differences.forEach(function (result) {
 
     const li = document.createElement("li");
+
+    const item = inventory.find(function (item) {
+      return item.id === result.id;
+    });
+
+    li.addEventListener("click", function () {
+      showInventoryDetail(item, calculateInventory(item));
+    });
 
     if (result.difference > 0) {
       li.textContent =
@@ -604,6 +644,8 @@ showDifferenceButton.addEventListener("click", function () {
         "件";
     }
 
+    li.style.setProperty("cursor", "pointer", "important");
+
     differenceList.appendChild(li);
   });
 });
@@ -625,6 +667,41 @@ const inventorySummaryList =
 
 const showOutOfStockButton =
   document.getElementById("showOutOfStockButton");
+
+showOutOfStockButton.addEventListener("click", function () {
+
+  const outOfStockItems =
+    inventory.filter(function (item) {
+      return item.quantity === 0;
+    });
+
+  outOfStockList.innerHTML = "";
+
+  if (outOfStockItems.length === 0) {
+    outOfStockList.textContent = "在庫切れの商品はありません。";
+    return;
+  }
+
+  outOfStockItems.forEach(function (item) {
+
+    const li =
+      document.createElement("li");
+
+    li.style.cursor = "pointer";
+
+    li.addEventListener("click", function () {
+      const result = calculateInventory(item);
+      showInventoryDetail(item, result);
+    });
+
+    li.textContent =
+      item.name + " : " + item.quantity + "個";
+
+    outOfStockList.appendChild(li);
+
+  });
+
+});
 
 const quantityInput =
   document.getElementById("quantityInput");
@@ -683,6 +760,12 @@ checkInventoryButton.addEventListener("click", function () {
         "：在庫差異 " +
         result.difference +
         "個";
+
+      li.style.cursor = "pointer";
+
+      li.addEventListener("click", function () {
+        showInventoryDetail(item, result);
+      });
 
       if (result.difference < 0) {
 
@@ -1157,48 +1240,6 @@ checkInventoryButton.addEventListener("click", function () {
 
 });
 
-
-
-showDifferenceButton.addEventListener("click", function () {
-
-  differenceList.innerHTML = "";
-
-
-  inventory.forEach(function (item) {
-
-    const result =
-      calculateInventory(item);
-
-    if (result.difference !== 0) {
-
-      const li = document.createElement("li");
-
-      li.textContent =
-        item.name +
-        "：現在の在庫 " +
-        item.quantity +
-        "個" +
-        " / 入庫合計 " +
-        result.inTotal +
-        "個" +
-        " / 出庫合計 " +
-        result.outTotal +
-        "個" +
-        " / 計算上の在庫 " +
-        result.calculatedStock +
-        "個" +
-        " / 差異 " +
-        Math.abs(result.difference) +
-        "個";
-
-      differenceList.appendChild(li);
-    }
-
-  });
-
-});
-
-
 adjustInventoryButton.addEventListener("click", function () {
 
   const name =
@@ -1354,27 +1395,6 @@ function renderSearchResults(results) {
   });
 
 }
-
-showOutOfStockButton.addEventListener("click", function () {
-
-  const outOfStockItems =
-    inventory.filter(function (item) {
-      return item.quantity === 0;
-    });
-  outOfStockList.innerHTML = "";
-
-  outOfStockItems.forEach(function (item) {
-
-    const li =
-      document.createElement("li");
-
-    li.textContent =
-      item.name + " : " + item.quantity + "個";
-
-    outOfStockList.appendChild(li);
-
-  });
-});
 
 resetInventoryButton.addEventListener("click", function () {
 
@@ -1558,7 +1578,15 @@ function renderInventory() {
           return inventoryItem === item;
         });
 
+      const result = confirm("この商品を削除しますか？");
+
+      if (!result) {
+        return;
+      }
+
       inventory.splice(deleteIndex, 1);
+
+      saveInventory();
 
       renderInventory();
 
@@ -1574,10 +1602,7 @@ function renderInventoryHistory(filterType) {
   const resetInventoryHistoryButton =
     document.getElementById("resetInventoryHistoryButton");
 
-  resetInventoryHistoryButton.addEventListener(
-    "click",
-    function () {
-
+  resetInventoryHistoryButton.onclick = function () {
       inventoryHistory.length = 0;
 
       localStorage.removeItem("inventoryHistory");
@@ -1585,8 +1610,8 @@ function renderInventoryHistory(filterType) {
       renderInventoryHistory();
 
       alert("入出庫履歴をリセットしました");
-    }
-  );
+    };
+  
 
   const historyList =
     document.getElementById("inventoryHistoryList");
@@ -1632,10 +1657,21 @@ function renderInventoryHistory(filterType) {
       inventoryHistory;
   }
 
+  const inventoryHistoryCount =
+    document.getElementById("inventoryHistoryCount");
+
+  inventoryHistoryCount.textContent =
+    "入出庫履歴：" +
+    displayHistory.length +
+    "件";
   displayHistory.forEach(function (history) {
 
     const li =
       document.createElement("li");
+
+    const currentItem = inventory.find(function (item) {
+      return item.id === history.itemId;
+    });
 
     li.textContent =
       history.time +
@@ -1646,6 +1682,10 @@ function renderInventoryHistory(filterType) {
       " " +
       history.quantity +
       "個";
+
+    if (!currentItem) {
+      li.textContent += " 【現在の商品にはありません】";
+    }
 
     const inventoryHistoryCount =
       document.getElementById("inventoryHistoryCount");
@@ -1685,6 +1725,10 @@ function renderInventoryHistory(filterType) {
         inventoryHistory[deleteIndex];
 
       inventoryHistory.splice(deleteIndex, 1);
+
+      saveInventoryHistory();
+      
+      renderInventoryHistory();
 
       const undoButton =
         document.createElement("button");
@@ -1758,6 +1802,7 @@ function renderInventoryHistory(filterType) {
     });
 
     historyList.appendChild(li);
+    
   });
 }
 
@@ -2064,7 +2109,8 @@ readCsvButton.addEventListener("click", function () {
 
       if (
         values[1] !== "入庫" &&
-        values[1] !== "出庫"
+        values[1] !== "出庫" &&
+        values[1] !== "調整"
       ) {
         alert("種類が正しくありません");
         return;
@@ -2103,7 +2149,11 @@ readCsvButton.addEventListener("click", function () {
             item.time === history.time &&
             item.type === history.type &&
             item.name === history.name &&
-            item.quantity === history.quantity
+            item.quantity === history.quantity &&
+            item.quantity === history.quantity &&
+            item.oldQuantity === history.oldQuantity &&
+            item.newQuantity === history.newQuantity &&
+            item.reason === history.reason
           );
         });
 
@@ -2140,7 +2190,10 @@ importHistoryButton.addEventListener("click", function () {
           item.createdAt === history.createdAt &&
           item.type === history.type &&
           item.name === history.name &&
-          item.quantity === history.quantity
+          item.quantity === history.quantity &&
+          item.oldQuantity === history.oldQuantity &&
+          item.newQuantity === history.newQuantity &&
+          item.reason === history.reason
         );
 
       });
@@ -2190,8 +2243,8 @@ function validateQuantity(quantity) {
     return false;
   }
 
-  if (quantity < 0) {
-    alert("数量は0以上で入力してください");
+  if (quantity <= 0) {
+    alert("数量は1以上で入力してください");
     return false;
   }
 
@@ -2231,38 +2284,38 @@ function validateOptionalQuantity(quantity) {
 }
 
 function validateDateTime(value) {
-
   if (value.trim() === "") {
     alert("日時が入力されていません");
     return false;
   }
 
   if (
-    !/^\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{2}:\d{2}$/.test(value)
+    !/^\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{2}(:\d{2})?$/.test(value)
   ) {
     alert("日時の形式が正しくありません");
     return false;
   }
 
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    alert("日時が正しくありません");
-    return false;
-  }
-
   const parts = value.match(
-    /^(\d{4})\/(\d{1,2})\/(\d{1,2}) (\d{1,2}):(\d{2}):(\d{2})$/
+    /^(\d{4})\/(\d{1,2})\/(\d{1,2}) (\d{1,2}):(\d{2})(?::(\d{2}))?$/
   );
 
   const year = Number(parts[1]);
   const month = Number(parts[2]);
   const day = Number(parts[3]);
+  const hour = Number(parts[4]);
+  const minute = Number(parts[5]);
+  const second = parts[6] === undefined ? 0 : Number(parts[6]);
+
+  const date = new Date(year, month - 1, day, hour, minute, second);
 
   if (
     date.getFullYear() !== year ||
     date.getMonth() + 1 !== month ||
-    date.getDate() !== day
+    date.getDate() !== day ||
+    date.getHours() !== hour ||
+    date.getMinutes() !== minute ||
+    date.getSeconds() !== second
   ) {
     alert("存在しない日時です");
     return false;
@@ -2342,6 +2395,8 @@ clearImportedHistoryButton.addEventListener("click", function () {
   saveImportedHistory();
 
   renderImportedHistory();
+
+  csvResult.textContent = "";
 });
 
 const historySearchCount =
