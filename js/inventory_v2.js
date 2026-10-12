@@ -2533,6 +2533,17 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
       return;
     }
 
+    // 復元前のデータをバックアップ
+    localStorage.setItem(
+      "inventoryBeforeRestore",
+      JSON.stringify(inventory)
+    );
+
+    localStorage.setItem(
+      "inventoryHistoryBeforeRestore",
+      JSON.stringify(inventoryHistory)
+    );
+
     inventory.length = 0;
     inventory.push(...newInventory);
 
