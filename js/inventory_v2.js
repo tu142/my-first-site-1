@@ -2544,6 +2544,14 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
       JSON.stringify(inventoryHistory)
     );
 
+    if (
+      !localStorage.getItem("inventoryBeforeRestore") ||
+      !localStorage.getItem("inventoryHistoryBeforeRestore")
+    ) {
+      alert("バックアップに失敗しました。復元を中止します。");
+      return;
+    }
+    
     inventory.length = 0;
     inventory.push(...newInventory);
 
