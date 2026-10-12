@@ -2508,5 +2508,49 @@ renderInventory();
 renderInventoryHistory();
 renderImportedHistory();
 
+document.getElementById("restoreBackupButton").addEventListener("click", async function () {
+  const inventoryFile = document.getElementById("inventoryBackupFile").files[0];
+  const historyFile = document.getElementById("historyBackupFile").files[0];
+
+  if (!inventoryFile || !historyFile) {
+    alert("在庫と履歴のJSONファイルを両方選択してください");
+    return;
+  }
+
+  try {
+    const inventoryText = await inventoryFile.text();
+    const historyText = await historyFile.text();
+
+    const newInventory = JSON.parse(inventoryText);
+    const newHistory = JSON.parse(historyText);
+
+    if (!Array.isArray(newInventory) || !Array.isArray(newHistory)) {
+      alert("JSONの形式が正しくありません");
+      return;
+    }
+
+    if (!confirm("現在の在庫と履歴を選択したバックアップで置き換えます。よろしいですか？")) {
+      return;
+    }
+
+    inventory.length = 0;
+    inventory.push(...newInventory);
+
+    inventoryHistory.length = 0;
+    inventoryHistory.push(...newHistory);
+
+    saveInventory();
+    saveInventoryHistory();
+    renderInventory();
+    renderInventoryHistory();
+    renderImportedHistory();
+
+    alert("在庫と履歴を復元しました");
+  } catch (error) {
+    console.error(error);
+    alert("復元に失敗しました。JSONファイルを確認してください");
+  }
+});
+
 
 
