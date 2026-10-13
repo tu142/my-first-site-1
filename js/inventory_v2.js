@@ -2529,6 +2529,36 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
       return;
     }
 
+    const invalidHistory = newHistory.some(function (history) {
+      return (
+        !history ||
+        !["入庫", "出庫", "調整"].includes(history.type) ||
+        typeof history.name !== "string" ||
+        !Number.isFinite(history.quantity) ||
+        history.quantity < 0
+      );
+    });
+
+    if (invalidHistory) {
+      alert("履歴データの内容が正しくありません");
+      return;
+    }
+    
+    const invalidItem = newInventory.some(function (item) {
+      return (
+        !item ||
+        item.id === undefined ||
+        typeof item.name !== "string" ||
+        !Number.isFinite(item.quantity) ||
+        item.quantity < 0
+      );
+    });
+
+    if (invalidItem) {
+      alert("在庫データの内容が正しくありません");
+      return;
+    }
+
     if (!confirm("現在の在庫と履歴を選択したバックアップで置き換えます。よろしいですか？")) {
       return;
     }
@@ -2551,7 +2581,7 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
       alert("バックアップに失敗しました。復元を中止します。");
       return;
     }
-    
+
     inventory.length = 0;
     inventory.push(...newInventory);
 
