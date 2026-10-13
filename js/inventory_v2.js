@@ -2543,7 +2543,7 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
       alert("履歴データの内容が正しくありません");
       return;
     }
-    
+
     const invalidItem = newInventory.some(function (item) {
       return (
         !item ||
@@ -2588,12 +2588,57 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
     inventoryHistory.length = 0;
     inventoryHistory.push(...newHistory);
 
+    function renderOrphanHistory() {
+      const inventoryData = JSON.parse(
+        localStorage.getItem("inventory") || "[]"
+      );
+
+      const historyData = JSON.parse(
+        localStorage.getItem("inventoryHistory") || "[]"
+      );
+
+      const orphanHistory = historyData.filter(function (history) {
+        return (
+          history.itemId !== undefined &&
+          !inventoryData.some(function (item) {
+            return String(item.id) === String(history.itemId);
+          })
+        );
+      });
+
+      const list = document.getElementById("orphanHistoryList");
+      const message = document.getElementById("orphanHistoryMessage");
+
+      list.innerHTML = "";
+
+      if (orphanHistory.length === 0) {
+        message.textContent = "紐づいていない履歴はありません。";
+        return;
+      }
+
+      message.textContent =
+        "紐づいていない履歴が " + orphanHistory.length + " 件あります。";
+
+      orphanHistory.forEach(function (history) {
+        const li = document.createElement("li");
+
+        li.textContent =
+          history.name + " / " +
+          history.type + " / 数量: " +
+          history.quantity + " / " +
+          history.time;
+
+        list.appendChild(li);
+      });
+    }
+
     saveInventory();
     saveInventoryHistory();
     renderInventory();
     renderInventoryHistory();
     renderImportedHistory();
-
+    renderOrphanHistory();
+    
     alert("在庫と履歴を復元しました");
   } catch (error) {
     console.error(error);
@@ -2602,4 +2647,6 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
 });
 
 
+
+renderOrphanHistory();
 
