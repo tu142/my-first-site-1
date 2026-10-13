@@ -152,7 +152,7 @@ showLowStockButton.addEventListener("click", function () {
       return item.quantity > 0 && item.quantity <= 5;
     });
 
- 
+
 
   lowStockItems.sort(function (a, b) {
     return a.quantity - b.quantity;
@@ -191,6 +191,9 @@ function showInventoryDetail(item, result) {
     "<strong>基本情報</strong><br>" +
     "商品名：" +
     item.name +
+    "<br>" +
+    "現在の商品ID：" +
+    item.id +
     "<br>" +
     "現在の在庫：" +
     item.quantity +
@@ -241,6 +244,48 @@ function showInventoryDetail(item, result) {
       return history.itemId === item.id;
     });
 
+  const orphanHistory =
+    inventoryHistory.filter(function (history) {
+      return (
+        history.name === item.name &&
+        history.itemId !== undefined &&
+        !inventory.some(function (inventoryItem) {
+          return String(inventoryItem.id) === String(history.itemId);
+        })
+      );
+    });
+
+  orphanHistory.sort(function (a, b) {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  inventoryDetail.innerHTML +=
+    "<br><br><strong>未紐づけ履歴の件数：" +
+    orphanHistory.length +
+    "件</strong>";
+
+  if (orphanHistory.length > 0) {
+    inventoryDetail.innerHTML +=
+      "<br><br><strong>同じ商品名の未紐づけ履歴</strong>";
+
+    orphanHistory.forEach(function (history) {
+      inventoryDetail.innerHTML +=
+        "<br>" +
+        history.time +
+        " 【" +
+        history.type +
+        "】 " +
+        history.quantity +
+        "個" +
+        "<br>履歴の商品ID：" +
+        history.itemId +
+        "<br>※現在の商品IDとは異なる履歴です。";
+    });
+
+  } else {
+    inventoryDetail.innerHTML +=
+      "<br><br>同じ商品名の未紐づけ履歴はありません。";
+  }
 
   const hasAdjustment =
     itemHistory.some(function (history) {
@@ -499,7 +544,7 @@ function calculateInventory(item) {
   allHistory.slice(0, 5).map(function (history) {
     return history.itemId;
   })
-  
+
   const validHistory =
     itemHistory.filter(isValidHistory);
 
@@ -1603,15 +1648,15 @@ function renderInventoryHistory(filterType) {
     document.getElementById("resetInventoryHistoryButton");
 
   resetInventoryHistoryButton.onclick = function () {
-      inventoryHistory.length = 0;
+    inventoryHistory.length = 0;
 
-      localStorage.removeItem("inventoryHistory");
+    localStorage.removeItem("inventoryHistory");
 
-      renderInventoryHistory();
+    renderInventoryHistory();
 
-      alert("入出庫履歴をリセットしました");
-    };
-  
+    alert("入出庫履歴をリセットしました");
+  };
+
 
   const historyList =
     document.getElementById("inventoryHistoryList");
@@ -1727,7 +1772,7 @@ function renderInventoryHistory(filterType) {
       inventoryHistory.splice(deleteIndex, 1);
 
       saveInventoryHistory();
-      
+
       renderInventoryHistory();
 
       const undoButton =
@@ -1802,7 +1847,7 @@ function renderInventoryHistory(filterType) {
     });
 
     historyList.appendChild(li);
-    
+
   });
 }
 
@@ -2508,6 +2553,54 @@ renderInventory();
 renderInventoryHistory();
 renderImportedHistory();
 
+function renderOrphanHistory() {
+  const inventoryData = JSON.parse(
+    localStorage.getItem("inventory") || "[]"
+  );
+
+  const historyData = JSON.parse(
+    localStorage.getItem("inventoryHistory") || "[]"
+  );
+
+  const orphanHistory = historyData.filter(function (history) {
+    return (
+      history.itemId !== undefined &&
+      !inventoryData.some(function (item) {
+        return String(item.id) === String(history.itemId);
+      })
+    );
+  });
+
+  orphanHistory.sort(function (a, b) {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+  
+  const list = document.getElementById("orphanHistoryList");
+  const message = document.getElementById("orphanHistoryMessage");
+
+  list.innerHTML = "";
+
+  if (orphanHistory.length === 0) {
+    message.textContent = "紐づいていない履歴はありません。";
+    return;
+  }
+
+  message.textContent =
+    "紐づいていない履歴が " + orphanHistory.length + " 件あります。";
+
+  orphanHistory.forEach(function (history) {
+    const li = document.createElement("li");
+
+    li.textContent =
+      history.name + " / " +
+      history.type + " / 数量: " +
+      history.quantity + " / " +
+      history.time;
+
+    list.appendChild(li);
+  });
+}
+
 document.getElementById("restoreBackupButton").addEventListener("click", async function () {
   const inventoryFile = document.getElementById("inventoryBackupFile").files[0];
   const historyFile = document.getElementById("historyBackupFile").files[0];
@@ -2588,57 +2681,13 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
     inventoryHistory.length = 0;
     inventoryHistory.push(...newHistory);
 
-    function renderOrphanHistory() {
-      const inventoryData = JSON.parse(
-        localStorage.getItem("inventory") || "[]"
-      );
-
-      const historyData = JSON.parse(
-        localStorage.getItem("inventoryHistory") || "[]"
-      );
-
-      const orphanHistory = historyData.filter(function (history) {
-        return (
-          history.itemId !== undefined &&
-          !inventoryData.some(function (item) {
-            return String(item.id) === String(history.itemId);
-          })
-        );
-      });
-
-      const list = document.getElementById("orphanHistoryList");
-      const message = document.getElementById("orphanHistoryMessage");
-
-      list.innerHTML = "";
-
-      if (orphanHistory.length === 0) {
-        message.textContent = "紐づいていない履歴はありません。";
-        return;
-      }
-
-      message.textContent =
-        "紐づいていない履歴が " + orphanHistory.length + " 件あります。";
-
-      orphanHistory.forEach(function (history) {
-        const li = document.createElement("li");
-
-        li.textContent =
-          history.name + " / " +
-          history.type + " / 数量: " +
-          history.quantity + " / " +
-          history.time;
-
-        list.appendChild(li);
-      });
-    }
-
     saveInventory();
     saveInventoryHistory();
     renderInventory();
     renderInventoryHistory();
     renderImportedHistory();
     renderOrphanHistory();
-    
+
     alert("在庫と履歴を復元しました");
   } catch (error) {
     console.error(error);
@@ -2646,7 +2695,4 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
   }
 });
 
-
-
 renderOrphanHistory();
-

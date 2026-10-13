@@ -123,25 +123,36 @@
 
   <p id="undoMessage"></p>
 
-  <input id="historySearchInput" type="text" placeholder="商品名で履歴を検索">
 
+  <h3>商品と紐づいていない履歴</h3>
+  <p id="orphanHistoryMessage">未確認の履歴を確認します。</p>
+  <ul id="orphanHistoryList"></ul>
+  
+
+  <input id="historySearchInput" type="text" placeholder="商品名で履歴を検索">
+  
   <select id="historyTypeSelect">
     <option value="すべて">すべて</option>
     <option value="入庫">入庫</option>
     <option value="出庫">出庫</option>
     <option value="調整">調整</option>
   </select>
-
-
+  
+  
   <button id="historySearchButton">
     履歴を検索
   </button>
 
+  <button id="resetHistorySearchButton">
+    検索をリセット
+  </button>
+  
+  <button id="newestSearchHistoryButton">新しい順</button>
+  <button id="oldestSearchHistoryButton">古い順</button>
+  
+  <ul id="historySearchList"></ul>
+  
   <p id="historySearchCount"></p>
-
-  <h3>商品と紐づいていない履歴</h3>
-  <p id="orphanHistoryMessage">未確認の履歴を確認します。</p>
-  <ul id="orphanHistoryList"></ul>
   <button id="exportHistoryButton">
     検索結果をCSV保存
   </button>
@@ -170,15 +181,6 @@
   </button>
 
   <pre id="csvResult"></pre>
-
-  <button id="resetHistorySearchButton">
-    検索をリセット
-  </button>
-
-  <button id="newestSearchHistoryButton">新しい順</button>
-  <button id="oldestSearchHistoryButton">古い順</button>
-
-  <ul id="historySearchList"></ul>
 
   <script src="js/inventory_v2.js"></script>
 </body>
