@@ -2644,7 +2644,8 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
         item.id === undefined ||
         typeof item.name !== "string" ||
         !Number.isFinite(item.quantity) ||
-        item.quantity < 0
+        item.quantity < 0 ||
+        !Number.isInteger(item.quantity)
       );
     });
 
