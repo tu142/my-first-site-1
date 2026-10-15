@@ -2939,3 +2939,40 @@ confirmInventoryCsvButton.addEventListener("click", function () {
       : "なし")
   );
 });
+
+
+document.getElementById("backupInventoryButton").addEventListener("click", function () {
+  const json = JSON.stringify(inventory, null, 2);
+
+  const blob = new Blob([json], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "inventory_backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+
+document.getElementById("backupHistoryButton").addEventListener("click", function () {
+  const json = JSON.stringify(inventoryHistory, null, 2);
+
+  const blob = new Blob([json], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "inventory_history_backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
