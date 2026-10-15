@@ -2142,9 +2142,11 @@ readCsvButton.addEventListener("click", function () {
 
     lines.slice(1).forEach(function (line) {
 
-      if (line.trim() === "") {
+      if (line.trim().replace(/"/g, "") === "") {
         return;
       }
+
+
       const values =
         parseCsvLine(line);
 
@@ -2232,13 +2234,12 @@ importHistoryButton.addEventListener("click", function () {
       inventoryHistory.some(function (item) {
 
         return (
-          item.createdAt === history.createdAt &&
+          item.time === history.time &&
           item.type === history.type &&
           item.name === history.name &&
           item.quantity === history.quantity &&
           item.oldQuantity === history.oldQuantity &&
-          item.newQuantity === history.newQuantity &&
-          item.reason === history.reason
+          (item.reason || "").trim() === (history.reason || "").trim()
         );
 
       });
@@ -2574,7 +2575,7 @@ function renderOrphanHistory() {
   orphanHistory.sort(function (a, b) {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
-  
+
   const list = document.getElementById("orphanHistoryList");
   const message = document.getElementById("orphanHistoryMessage");
 
@@ -2696,3 +2697,245 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
 });
 
 renderOrphanHistory();
+
+
+const inventoryCsvFileInput =
+  document.getElementById("inventoryCsvFileInput");
+
+const readInventoryCsvButton =
+  document.getElementById("readInventoryCsvButton");
+
+const confirmInventoryCsvButton =
+  document.getElementById("confirmInventoryCsvButton");
+  
+const inventoryCsvPreview =
+  document.getElementById("inventoryCsvPreview");
+
+let pendingInventoryProducts = [];
+
+inventoryCsvPreview.textContent = "";
+
+const previewTitle = document.createElement("h3");
+previewTitle.textContent = "登録前の商品一覧";
+inventoryCsvPreview.appendChild(previewTitle);
+
+readInventoryCsvButton.addEventListener("click", function () {
+  const file = inventoryCsvFileInput.files[0];
+
+  if (!file) {
+    alert("在庫商品CSVファイルを選択してください");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+    const lines = reader.result.trim().split(/\r?\n/);
+
+    const header = lines[0].split(",").map(function (value) {
+      return value.trim();
+    });
+
+    if (
+      header.length !== 2 ||
+      header[0] !== "商品名" ||
+      header[1] !== "在庫数"
+    ) {
+      alert("CSVの見出しは「商品名,在庫数」にしてください。");
+      return;
+    }
+
+    const dataLines = lines.slice(1).filter(function (line) {
+      return line.trim() !== "";
+    });
+
+    const invalidLines = dataLines.filter(function (line) {
+      return line.split(",").length !== 2;
+    });
+
+    if (invalidLines.length > 0) {
+      alert("CSVの各行は「商品名,在庫数」の2列にしてください。");
+      return;
+    }
+
+    const products = dataLines
+      .map(function (line) {
+        const values = line.split(",");
+
+        if (values.length !== 2) {
+          alert("CSVの各行は「商品名,在庫数」の2列にしてください。");
+          return;
+        }
+
+        return {
+          name: values[0].trim(),
+          quantity: Number(values[1])
+        };
+      });
+    
+    const productNames = products.map(function (product) {
+      return product.name;
+    });
+
+    const hasDuplicateNames =
+      new Set(productNames).size !== productNames.length;
+   
+    if (hasDuplicateNames) {
+   
+      alert("CSV内に同じ商品名があります。商品名を確認してください。");
+      return;
+    }
+
+    console.log(products);
+
+    const invalidProducts = products.filter(function (product) {
+      return (
+        product.name === "" ||
+        !Number.isFinite(product.quantity) ||
+        !Number.isInteger(product.quantity) ||
+        product.quantity < 0
+      );
+    });
+
+    if (invalidProducts.length > 0) {
+      alert("商品名または在庫数に問題があります。CSVを確認してください。");
+      return;
+    }
+
+    pendingInventoryProducts = products;
+
+    inventoryCsvPreview.textContent = "";
+
+    const previewTitle = document.createElement("h3");
+    previewTitle.textContent = "登録前の商品一覧";
+    inventoryCsvPreview.appendChild(previewTitle);
+
+    const previewList = document.createElement("ul");
+
+    let previewAddedCount = 0;
+    let previewSkippedCount = 0;
+
+    products.forEach(function (product) {
+      const listItem = document.createElement("li");
+
+      const existingItem = inventory.find(function (item) {
+        return item.name === product.name;
+      });
+
+      if (existingItem) {
+        previewSkippedCount++;
+      } else {
+        previewAddedCount++;
+      }
+
+      listItem.textContent =
+        product.name +
+        "（在庫数：" + product.quantity + "）" +
+        (existingItem ? "【スキップ】" : "【追加】");
+
+      previewList.appendChild(listItem);
+    });
+
+    inventoryCsvPreview.appendChild(previewList);
+
+    const previewSummary = document.createElement("p");
+
+    previewSummary.textContent =
+      "追加：" + previewAddedCount + "件 / " +
+      "スキップ：" + previewSkippedCount + "件";
+
+    inventoryCsvPreview.appendChild(previewSummary);
+    
+    alert(
+      "CSVを読み込みました。件数：" + products.length +
+      "件\n内容を確認してから「この内容で登録する」を押してください。"
+    );
+
+  };
+
+  reader.readAsText(file, "UTF-8");
+});
+
+confirmInventoryCsvButton.addEventListener("click", function () {
+  if (pendingInventoryProducts.length === 0) {
+    alert("先に在庫商品CSVを読み込んでください。");
+    return;
+  }
+
+  const products = pendingInventoryProducts;
+
+
+  let addedCount = 0;
+  let skippedCount = 0;
+  let addedProducts = [];
+  let skippedProducts = [];
+
+  products.forEach(function (product) {
+    const existingItem = inventory.find(function (item) {
+      return item.name === product.name;
+    });
+
+    if (existingItem) {
+      skippedCount++;
+      skippedProducts.push(product.name);
+      return;
+    }
+
+    const newItem = {
+      id: Date.now() + Math.random(),
+      name: product.name,
+      quantity: product.quantity
+    };
+
+
+    inventory.push(newItem);
+    addedProducts.push(newItem);
+
+    const now = new Date();
+    const time =
+      now.getFullYear() + "/" +
+      String(now.getMonth() + 1).padStart(2, "0") + "/" +
+      String(now.getDate()).padStart(2, "0") + " " +
+      String(now.getHours()).padStart(2, "0") + ":" +
+      String(now.getMinutes()).padStart(2, "0") + ":" +
+      String(now.getSeconds()).padStart(2, "0");
+
+    inventoryHistory.push({
+      time: time,
+      type: "入庫",
+      name: newItem.name,
+      itemId: newItem.id,
+      quantity: newItem.quantity,
+      oldQuantity: 0,
+      newQuantity: newItem.quantity,
+      reason: "CSV取り込み",
+      createdAt: now.getTime()
+    });
+
+    addedCount++;
+  });
+
+  pendingInventoryProducts = [];
+  inventoryCsvPreview.textContent = "";
+
+  saveInventory();
+  saveInventoryHistory();
+  renderInventoryHistory();
+  renderInventory();
+
+  alert(
+    "取り込み完了\n" +
+    "追加：" + addedCount + "件\n" +
+    "追加した商品：" +
+    (addedProducts.length > 0
+      ? addedProducts.map(function (item) {
+        return item.name + "（在庫数：" + item.quantity + "）";
+      }).join("、")
+      : "なし") + "\n" +
+    "スキップ：" + skippedCount + "件\n" +
+    "スキップした商品：" +
+    (skippedProducts.length > 0
+      ? skippedProducts.join("、")
+      : "なし")
+  );
+});
