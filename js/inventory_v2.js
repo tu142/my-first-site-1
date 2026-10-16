@@ -2690,10 +2690,54 @@ document.getElementById("restoreBackupButton").addEventListener("click", async f
     renderImportedHistory();
     renderOrphanHistory();
 
+
     alert("在庫と履歴を復元しました");
   } catch (error) {
     console.error(error);
     alert("復元に失敗しました。JSONファイルを確認してください");
+  }
+});
+
+
+document.getElementById("undoRestoreButton").addEventListener("click", function () {
+  console.log("元に戻すボタンがクリックされました");
+  try {
+    const savedInventory = localStorage.getItem("inventoryBeforeRestore");
+    const savedHistory = localStorage.getItem("inventoryHistoryBeforeRestore");
+
+    if (!savedInventory || !savedHistory) {
+      alert("復元前のデータが見つかりません");
+      return;
+    }
+
+    const previousInventory = JSON.parse(savedInventory);
+    const previousHistory = JSON.parse(savedHistory);
+
+    if (
+      !Array.isArray(previousInventory) ||
+      !Array.isArray(previousHistory)
+    ) {
+      alert("保存されているデータの形式が正しくありません");
+      return;
+    }
+    inventory.length = 0;
+    inventory.push(...previousInventory);
+
+    inventoryHistory.length = 0;
+    inventoryHistory.push(...previousHistory);
+
+    saveInventory();
+    saveInventoryHistory();
+
+    renderInventory();
+    renderInventoryHistory();
+    renderImportedHistory();
+    renderOrphanHistory();
+
+    alert("復元前の在庫と履歴に戻しました");
+  } catch (error) {
+    console.error(error);
+    alert("復元に失敗しました。保存データを確認してください");
   }
 });
 
@@ -2708,7 +2752,7 @@ const readInventoryCsvButton =
 
 const confirmInventoryCsvButton =
   document.getElementById("confirmInventoryCsvButton");
-  
+
 const inventoryCsvPreview =
   document.getElementById("inventoryCsvPreview");
 
@@ -2773,16 +2817,16 @@ readInventoryCsvButton.addEventListener("click", function () {
           quantity: Number(values[1])
         };
       });
-    
+
     const productNames = products.map(function (product) {
       return product.name;
     });
 
     const hasDuplicateNames =
       new Set(productNames).size !== productNames.length;
-   
+
     if (hasDuplicateNames) {
-   
+
       alert("CSV内に同じ商品名があります。商品名を確認してください。");
       return;
     }
@@ -2846,7 +2890,7 @@ readInventoryCsvButton.addEventListener("click", function () {
       "スキップ：" + previewSkippedCount + "件";
 
     inventoryCsvPreview.appendChild(previewSummary);
-    
+
     alert(
       "CSVを読み込みました。件数：" + products.length +
       "件\n内容を確認してから「この内容で登録する」を押してください。"
