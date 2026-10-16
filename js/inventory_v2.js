@@ -311,7 +311,10 @@ function showInventoryDetail(item, result) {
   const adjustmentHistory =
     itemHistory.filter(function (history) {
 
-      return history.type === "調整";
+      return (
+        history.type === "調整" &&
+        history.reason !== "商品情報の編集"
+      );
     })
       .sort(function (a, b) {
         return b.createdAt - a.createdAt;
@@ -326,7 +329,7 @@ function showInventoryDetail(item, result) {
     inventoryDetail.innerHTML +=
       "<br><br>最後の調整内容：" +
       "<br>調整日時：" +
-      latestAdjustment.time +
+      (latestAdjustment.time || latestAdjustment.date || "日時不明") +
       "<br>変更前の在庫：" +
       latestAdjustment.oldQuantity +
       "個" +
