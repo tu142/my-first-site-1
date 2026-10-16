@@ -1458,11 +1458,15 @@ removeButton.addEventListener("click", function () {
   const name =
     productInput.value.trim();
 
-  const removeQuantity =
-    Number(removeQuantityInput.value);
+  if (!/^\d+$/.test(removeQuantityInput.value.trim())) {
+    alert("出庫数量は1以上の整数で入力してください");
+    return;
+  }
+
+  const removeQuantity = Number(removeQuantityInput.value);
 
   if (removeQuantity <= 0) {
-    alert("出庫数量は0以上で入力してください");
+    alert("出庫数量は1以上で入力してください");
     return;
   }
 
@@ -1510,8 +1514,12 @@ addButton.addEventListener("click", function () {
     return;
   }
 
-  const quantity =
-    Number(quantityInput.value);
+  if (!/^\d+$/.test(quantityInput.value.trim())) {
+    alert("数量は1以上の整数で入力してください");
+    return;
+  }
+
+  const quantity = Number(quantityInput.value);
 
   if (!validateQuantity(quantity)) {
     return;

@@ -12,7 +12,7 @@
 
   <input id="productInput" type="text" placeholder="商品名">
 
-  <input id="quantityInput" type="number" placeholder="数量">
+  <input id="quantityInput" type="number" min="1" step="1" placeholder="数量">
 
   <input id="removeQuantityInput" type="number" placeholder="出庫数量">
 
@@ -127,18 +127,18 @@
   <h3>商品と紐づいていない履歴</h3>
   <p id="orphanHistoryMessage">未確認の履歴を確認します。</p>
   <ul id="orphanHistoryList"></ul>
-  
+
 
   <input id="historySearchInput" type="text" placeholder="商品名で履歴を検索">
-  
+
   <select id="historyTypeSelect">
     <option value="すべて">すべて</option>
     <option value="入庫">入庫</option>
     <option value="出庫">出庫</option>
     <option value="調整">調整</option>
   </select>
-  
-  
+
+
   <button id="historySearchButton">
     履歴を検索
   </button>
@@ -146,12 +146,12 @@
   <button id="resetHistorySearchButton">
     検索をリセット
   </button>
-  
+
   <button id="newestSearchHistoryButton">新しい順</button>
   <button id="oldestSearchHistoryButton">古い順</button>
-  
+
   <ul id="historySearchList"></ul>
-  
+
   <p id="historySearchCount"></p>
   <button id="exportHistoryButton">
     検索結果をCSV保存
@@ -164,7 +164,7 @@
   </button>
 
   <input id="inventoryCsvFileInput" type="file" accept=".csv">
-  
+
   <button id="readInventoryCsvButton">
     在庫商品CSVを読み込む
   </button>
@@ -178,7 +178,7 @@
   <h3>バックアップ保存</h3>
   <button id="backupInventoryButton">在庫データをバックアップ</button>
   <button id="backupHistoryButton">履歴データをバックアップ</button>
-  
+
   <h3>バックアップ復元</h3>
   <input id="inventoryBackupFile" type="file" accept=".json">
   <input id="historyBackupFile" type="file" accept=".json">
