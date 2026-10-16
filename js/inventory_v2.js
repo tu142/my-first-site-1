@@ -1688,9 +1688,25 @@ function renderInventory() {
         return;
       }
 
+      const oldName = item.name;
+      const oldQuantity = item.quantity;
+
       item.name = trimmedName;
       item.quantity = newQuantity;
 
+      inventoryHistory.push({
+        type: "調整",
+        itemId: item.id,
+        name: trimmedName,
+        oldName: oldName,
+        oldQuantity: oldQuantity,
+        newQuantity: newQuantity,
+        quantity: newQuantity,
+        reason: "商品情報の編集",
+        time: new Date().toLocaleString("ja-JP")
+      });
+
+      saveInventoryHistory();
       saveInventory();
       renderInventory();
     });
@@ -1782,10 +1798,13 @@ function renderInventoryHistory(filterType) {
       " : " +
       history.type +
       " " +
-      history.name +
+      (history.reason === "商品情報の編集"
+        ? history.oldName + " → " + history.name
+        : history.name) +
       " " +
       history.quantity +
       "個";
+
 
     if (!currentItem) {
       li.textContent += " 【現在の商品にはありません】";
@@ -1874,6 +1893,9 @@ function renderInventoryHistory(filterType) {
           "商品名：" +
           history.name +
           "<br>" +
+          (history.reason === "商品情報の編集"
+            ? "変更前の商品名：" + history.oldName + "<br>"
+            : "") +
           "変更前：" +
           history.oldQuantity +
           "個" +
