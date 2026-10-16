@@ -2751,7 +2751,7 @@ document.getElementById("undoRestoreButton").addEventListener("click", function 
       alert("保存されている履歴データの内容が正しくありません");
       return;
     }
-    
+
     inventory.length = 0;
     inventory.push(...previousInventory);
 
@@ -2765,6 +2765,9 @@ document.getElementById("undoRestoreButton").addEventListener("click", function 
     renderInventoryHistory();
     renderImportedHistory();
     renderOrphanHistory();
+    
+    localStorage.removeItem("inventoryBeforeRestore");
+    localStorage.removeItem("inventoryHistoryBeforeRestore");
 
     alert("復元前の在庫と履歴に戻しました");
   } catch (error) {
