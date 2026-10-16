@@ -1638,6 +1638,65 @@ function renderInventory() {
     });
     li.appendChild(deleteButton);
 
+    const editButton = document.createElement("button");
+    editButton.textContent = "編集";
+
+    editButton.addEventListener("click", function () {
+      const newName = prompt("新しい商品名を入力してください", item.name);
+
+      if (newName === null) {
+        return;
+      }
+
+      const trimmedName = newName.trim();
+
+      if (trimmedName === "") {
+        alert("商品名を入力してください");
+        return;
+      }
+
+      const duplicateName = inventory.some(function (inventoryItem) {
+        return (
+          inventoryItem !== item &&
+          inventoryItem.name === trimmedName
+        );
+      });
+
+      if (duplicateName) {
+        alert("同じ商品名がすでに登録されています");
+        return;
+      }
+
+      const newQuantityText = prompt(
+        "新しい在庫数を入力してください",
+        item.quantity
+      );
+
+      if (newQuantityText === null) {
+        return;
+      }
+
+      const newQuantity = Number(newQuantityText);
+
+      if (
+        newQuantityText.trim() === "" ||
+        !Number.isFinite(newQuantity) ||
+        !Number.isInteger(newQuantity) ||
+        newQuantity < 0
+      ) {
+        alert("在庫数は0以上の整数を入力してください");
+        return;
+      }
+
+      item.name = trimmedName;
+      item.quantity = newQuantity;
+
+      saveInventory();
+      renderInventory();
+    });
+
+    li.appendChild(editButton);
+
     inventoryList.appendChild(li);
   });
 }
@@ -2765,7 +2824,7 @@ document.getElementById("undoRestoreButton").addEventListener("click", function 
     renderInventoryHistory();
     renderImportedHistory();
     renderOrphanHistory();
-    
+
     localStorage.removeItem("inventoryBeforeRestore");
     localStorage.removeItem("inventoryHistoryBeforeRestore");
 
