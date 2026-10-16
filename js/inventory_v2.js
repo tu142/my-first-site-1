@@ -1794,7 +1794,7 @@ function renderInventoryHistory(filterType) {
     });
 
     li.textContent =
-      history.time +
+      (history.time || history.date || "日時不明") +
       " : " +
       history.type +
       " " +
