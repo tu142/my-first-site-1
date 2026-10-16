@@ -2720,6 +2720,38 @@ document.getElementById("undoRestoreButton").addEventListener("click", function 
       alert("保存されているデータの形式が正しくありません");
       return;
     }
+
+    const invalidItem = previousInventory.some(function (item) {
+      return (
+        !item ||
+        item.id === undefined ||
+        typeof item.name !== "string" ||
+        !Number.isFinite(item.quantity) ||
+        item.quantity < 0 ||
+        !Number.isInteger(item.quantity)
+      );
+    });
+
+    if (invalidItem) {
+      alert("保存されている在庫データの内容が正しくありません");
+      return;
+    }
+
+    const invalidHistory = previousHistory.some(function (history) {
+      return (
+        !history ||
+        !["入庫", "出庫", "調整"].includes(history.type) ||
+        typeof history.name !== "string" ||
+        !Number.isFinite(history.quantity) ||
+        history.quantity < 0
+      );
+    });
+
+    if (invalidHistory) {
+      alert("保存されている履歴データの内容が正しくありません");
+      return;
+    }
+    
     inventory.length = 0;
     inventory.push(...previousInventory);
 
