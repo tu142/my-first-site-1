@@ -1572,6 +1572,7 @@ function renderInventory() {
 
   const displayInventory = [...inventory];
 
+  console.log("画面の商品数:", inventoryList.children.length);
   displayInventory.sort(function (a, b) {
 
     const aLow =
@@ -1611,15 +1612,31 @@ function renderInventory() {
     const li =
       document.createElement("li");
 
-    li.textContent =
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+
+    checkbox.className = "inventory-checkbox";
+
+    checkbox.value = item.id;
+
+    li.appendChild(checkbox);
+
+    const itemText =
+      document.createElement("span");
+
+    itemText.textContent =
       item.name + "*" + item.quantity + "個";
+
+    li.appendChild(itemText);
 
 
     if (item.quantity === 0) {
-      li.textContent += " ❌ 在庫切れ";
+      itemText.textContent += " ❌ 在庫切れ";
 
     } else if (item.quantity <= 5) {
-      li.textContent += " ⚠️ 在庫少";
+      itemText.textContent += " ⚠️ 在庫少";
     }
 
     const deleteButton =
@@ -1726,7 +1743,80 @@ function renderInventory() {
 
     inventoryList.appendChild(li);
   });
+  console.log("画面に追加した商品数:", inventoryList.children.length);
 }
+
+const deleteSelectedInventoryButton =
+  document.getElementById("deleteSelectedInventoryButton");
+
+deleteSelectedInventoryButton.addEventListener("click", function () {
+  const checkboxes =
+    document.querySelectorAll(".inventory-checkbox:checked");
+
+  if (checkboxes.length === 0) {
+    alert("削除する商品を選択してください");
+    return;
+  }
+
+  const result = confirm(
+    checkboxes.length + "件の商品を削除しますか？"
+  );
+
+  if (!result) {
+    return;
+  }
+
+  const selectedIds = Array.from(checkboxes).map(function (checkbox) {
+    return checkbox.value;
+  });
+
+  for (let i = inventory.length - 1; i >= 0; i--) {
+    if (selectedIds.includes(String(inventory[i].id))) {
+      inventory.splice(i, 1);
+    }
+  }
+
+  saveInventory();
+  renderInventory();
+});
+
+const deleteSelectedHistoryButton =
+  document.getElementById("deleteSelectedHistoryButton");
+
+deleteSelectedHistoryButton.addEventListener("click", function () {
+  const checkboxes =
+    document.querySelectorAll(".history-checkbox:checked");
+
+  if (checkboxes.length === 0) {
+    alert("削除する履歴を選択してください");
+    return;
+  }
+
+  const result = confirm(
+    checkboxes.length + "件の履歴を削除しますか？"
+  );
+
+  if (!result) {
+    return;
+  }
+
+  const selectedHistories = Array.from(checkboxes).map(function (checkbox) {
+    return checkbox.historyItem;
+  });
+
+  selectedHistories.forEach(function (selectedHistory) {
+    const deleteIndex = inventoryHistory.findIndex(function (historyItem) {
+      return historyItem === selectedHistory;
+    });
+
+    if (deleteIndex !== -1) {
+      inventoryHistory.splice(deleteIndex, 1);
+    }
+  });
+
+  saveInventoryHistory();
+  renderInventoryHistory();
+});
 
 function renderInventoryHistory(filterType) {
 
@@ -1800,11 +1890,23 @@ function renderInventoryHistory(filterType) {
     const li =
       document.createElement("li");
 
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.className = "history-checkbox";
+    checkbox.historyItem = history;
+
+    li.appendChild(checkbox);
+
     const currentItem = inventory.find(function (item) {
       return item.id === history.itemId;
     });
 
-    li.textContent =
+    const historyText =
+      document.createElement("span");
+
+    historyText.textContent =
       (history.time || history.date || "日時不明") +
       " : " +
       history.type +
@@ -1816,11 +1918,11 @@ function renderInventoryHistory(filterType) {
       history.quantity +
       "個";
 
+    li.appendChild(historyText);
 
     if (!currentItem) {
-      li.textContent += " 【現在の商品にはありません】";
+      historyText.textContent += " 【現在の商品にはありません】";
     }
-
     const inventoryHistoryCount =
       document.getElementById("inventoryHistoryCount");
 
