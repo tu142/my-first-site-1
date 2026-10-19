@@ -123,6 +123,55 @@ restoreInventoryButton.addEventListener("click", function () {
         return;
       }
 
+      const invalidItem = backupData.inventory.some(function (item) {
+        return (
+          !item ||
+          item.id === undefined ||
+          item.id === null ||
+          typeof item.name !== "string" ||
+          !Number.isInteger(item.quantity) ||
+          item.quantity < 0
+        );
+      });
+
+      if (invalidItem) {
+        alert("商品データに不正な値があります。復元を中止しました");
+        return;
+      }
+
+      const invalidHistory = backupData.inventoryHistory
+        .concat(backupData.importedHistory)
+        .some(function (history) {
+          if (
+            !history ||
+            (
+              history.time !== undefined &&
+              typeof history.time !== "string"
+            ) ||
+            typeof history.type !== "string" ||
+            typeof history.name !== "string"
+          ) {
+            return true;
+          }
+
+          if (history.type === "調整") {
+            const newQuantity =
+              history.newQuantity ?? history.quantity;
+
+            return (
+              !Number.isFinite(history.oldQuantity) ||
+              !Number.isFinite(newQuantity)
+            );
+          }
+
+          return !Number.isFinite(history.quantity);
+        });
+
+      if (invalidHistory) {
+        alert("履歴データに不正な値があります。復元を中止しました");
+        return;
+      }
+
       inventory.splice(
         0,
         inventory.length,
