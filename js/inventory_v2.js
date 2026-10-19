@@ -52,12 +52,111 @@ function saveInventory() {
 
 function saveInventoryHistory() {
 
+  const backupInventoryButton =
+    document.getElementById("backupInventoryButton");
+
+  backupInventoryButton.addEventListener("click", function () {
+    const backupData = {
+      inventory: inventory,
+      inventoryHistory: inventoryHistory,
+      importedHistory: importedHistory
+    };
+
+    const json = JSON.stringify(backupData, null, 2);
+
+    const blob = new Blob(
+      ["\uFEFF" + json],
+      { type: "application/json;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "inventory_backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  });
+
   localStorage.setItem(
     "inventoryHistory",
     JSON.stringify(inventoryHistory)
   );
 
 }
+
+const restoreInventoryFileInput =
+  document.getElementById("restoreInventoryFileInput");
+
+const restoreInventoryButton =
+  document.getElementById("restoreInventoryButton");
+
+restoreInventoryButton.addEventListener("click", function () {
+  const file = restoreInventoryFileInput.files[0];
+
+  if (!file) {
+    alert("バックアップファイルを選択してください");
+    return;
+  }
+
+  const result = confirm(
+    "現在の商品一覧と履歴を、バックアップの内容に置き換えますか？"
+  );
+
+  if (!result) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+    try {
+      const backupData = JSON.parse(reader.result);
+
+      if (
+        !Array.isArray(backupData.inventory) ||
+        !Array.isArray(backupData.inventoryHistory) ||
+        !Array.isArray(backupData.importedHistory)
+      ) {
+        alert("バックアップファイルの形式が正しくありません");
+        return;
+      }
+
+      inventory.splice(
+        0,
+        inventory.length,
+        ...backupData.inventory
+      );
+
+      inventoryHistory.splice(
+        0,
+        inventoryHistory.length,
+        ...backupData.inventoryHistory
+      );
+
+      importedHistory.splice(
+        0,
+        importedHistory.length,
+        ...backupData.importedHistory
+      );
+
+      saveInventory();
+      saveInventoryHistory();
+      saveImportedHistory();
+
+      renderInventory();
+      renderInventoryHistory();
+
+      alert("バックアップから復元しました");
+    } catch (error) {
+      alert("ファイルを読み込めませんでした");
+      console.error(error);
+    }
+  };
+
+  reader.readAsText(file, "UTF-8");
+});
 
 const savedInventoryHistory =
   localStorage.getItem("inventoryHistory");
