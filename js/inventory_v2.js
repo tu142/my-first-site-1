@@ -1,24 +1,43 @@
 
 const inventory = [];
 
-let deletedItem = null;
+const savedDeletedItems =
+  localStorage.getItem("deletedItems");
+
+const deletedItems = savedDeletedItems
+  ? JSON.parse(savedDeletedItems)
+  : [];
 
 const undoInventoryButton =
   document.getElementById("undoInventoryButton");
 
 undoInventoryButton.addEventListener("click", function () {
-  if (deletedItem === null) {
+  if (deletedItems.length === 0) {
     alert("復元する商品がありません");
     return;
   }
 
-  inventory.push(deletedItem);
+  const itemToRestore = deletedItems[deletedItems.length - 1];
 
+  const alreadyExists = inventory.some(function (item) {
+    return String(item.id) === String(itemToRestore.id);
+  });
+
+  if (alreadyExists) {
+    alert("この商品はすでに在庫一覧にあります");
+    return;
+  }
+
+  inventory.push(itemToRestore);
+
+  deletedItems.pop();
+
+  localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
+  
   saveInventory();
 
-  deletedItem = null;
-
   renderInventory();
+
 });
 
 const inventoryHistory = [];
@@ -1677,7 +1696,9 @@ function renderInventory() {
         return;
       }
 
-      deletedItem = inventory[deleteIndex];
+      deletedItems.push(inventory[deleteIndex]);
+
+      localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
 
       inventory.splice(deleteIndex, 1);
 
@@ -1794,9 +1815,12 @@ deleteSelectedInventoryButton.addEventListener("click", function () {
 
   for (let i = inventory.length - 1; i >= 0; i--) {
     if (selectedIds.includes(String(inventory[i].id))) {
+      deletedItems.push(inventory[i]);
       inventory.splice(i, 1);
     }
   }
+
+  localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
 
   saveInventory();
   renderInventory();
