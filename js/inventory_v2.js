@@ -1,6 +1,26 @@
 
 const inventory = [];
 
+let deletedItem = null;
+
+const undoInventoryButton =
+  document.getElementById("undoInventoryButton");
+
+undoInventoryButton.addEventListener("click", function () {
+  if (deletedItem === null) {
+    alert("復元する商品がありません");
+    return;
+  }
+
+  inventory.push(deletedItem);
+
+  saveInventory();
+
+  deletedItem = null;
+
+  renderInventory();
+});
+
 const inventoryHistory = [];
 
 function saveInventory() {
@@ -1656,6 +1676,8 @@ function renderInventory() {
       if (!result) {
         return;
       }
+
+      deletedItem = inventory[deleteIndex];
 
       inventory.splice(deleteIndex, 1);
 
